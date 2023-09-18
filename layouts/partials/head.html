@@ -1,0 +1,62 @@
+<head>
+  <meta charset="UTF-8">
+{{ printf `<meta http-equiv="Content-Security-Policy" content="default-src %s; connect-src %s; child-src %s; font-src %s; form-action %s; frame-src %s; img-src %s; object-src %s; style-src %s; script-src %s;">` 
+(delimit .Site.Params.csp.defaultsrc " ") (delimit .Site.Params.csp.connectsrc " ") (delimit .Site.Params.csp.childsrc " ") (delimit .Site.Params.csp.fontsrc " ") (delimit .Site.Params.csp.formaction " ") (delimit .Site.Params.csp.framesrc " ") (delimit .Site.Params.csp.imgsrc " ") (delimit .Site.Params.csp.objectsrc " ") (delimit .Site.Params.csp.stylesrc " ") (delimit .Site.Params.csp.scriptsrc " ") | safeHTML }}
+{{ if or (.Params.noindex) (eq hugo.Environment "development") }}
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+{{ else }}
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+{{- end -}}
+
+<link rel="canonical" href="{{ .Permalink }}" />
+
+<!-- for search engine optimization and third-party search engines like Elastic App Search-->
+{{- template "_internal/opengraph.html" . -}}
+
+<!-- Twitter card support -->
+{{ template "_internal/twitter_cards.html" . }}
+
+<!-- Google Analytics and Search -->
+{{ if hugo.IsProduction }}
+<!-- Use custom placeholder for search -->
+<script>
+window.onload = demo;
+function demo() {
+    document.getElementById("gsc-i-id1").setAttribute("placeholder", "Search...")
+}
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-REPLACEME"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-REPLACEME', { 'anonymize_ip': true });
+</script>
+
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "REPLACEME");
+</script>
+{{ end }}
+
+  <!-- prefetch and preconnect Google Nunito fonts; load Google font css directly -->
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,800,800i,900i&display=swap" rel="stylesheet"/>
+
+  <title>{{ .Title }}</title>
+
+  {{ "<!-- Mobile Responsive Meta -->" | safeHTML }}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with site.Params.description }}{{ . }}{{ end }}{{ end }}">
+  {{ with site.Params.author }}<meta name="author" content="{{ . }}">{{ end }}
+  {{ hugo.Generator }}
+
+  {{ "<!-- Main Stylesheet -->" | safeHTML }}
+  {{ $styles := resources.Get "scss/nwtime.scss" | toCSS | minify |fingerprint "md5" }}
+  <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen">
+</head>

@@ -1,0 +1,23 @@
+{{ "<!-- navigation -->" | safeHTML }}
+
+<!-- logos -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+	<div class="container-fluid">
+	  <div>
+	    <a class="navbar-brand" href="https://www.nwtime.org"><img height="80" width="80" src="{{ site.Params.logo2 | absURL }}" alt=""></a>
+		<a class="navbar-brand" style="color: #1a79c0 !important; font-size: 18px; font-weight: 700; margin-left: 20px;" href="{{ site.BaseURL }}">SyncE Project</a>
+      </div>
+  <!-- Incorporate Google search. -->
+{{ if hugo.IsProduction }}
+<script async src="https://cse.google.com/cse.js?cx=7474c4c5ca53f79ef"></script>
+  <div class="gcse-search">
+  </ul>
+  </div>
+{{ end }}
+  </nav>
+	
+<!-- bottom border --> 
+  <div class="header-border">
+  </div>
+
+{{ "<!-- /navigation -->" | safeHTML }}

@@ -1,0 +1,3 @@
+This repository contains the source code for the website of the [SyncE Project](https://sync-e.nwtime.org/).
+
+Website content is written in [extended markdown](https://www.markdownguide.org/extended-syntax/) and [Hugo](https://gohugo.io/) is used to generate the HTML. A framework is available for translations; contact [webmaster](mailto:webmaster@nwtime.org) if you are interested in working on a translation.
