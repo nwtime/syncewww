@@ -1,5 +1,5 @@
 baseURL = "https://sync-e.nwtime.org/"
-title = "SyncE Project"
+title = "SyncE Projects"
 enableRobotsTXT = true
 
 [params.plugins]
@@ -31,7 +31,7 @@ anchor = "smart"
 [languages]
 [languages.en]
 contentDir = "content/en"
-title = "SyncE Project"
+title = "SyncE Projects"
 languageName ="English"
 weight = 1
 
@@ -49,7 +49,7 @@ weight = 1
 copyright = "Network Time Foundation"
 logo2 = "images/logo.png"
 github_repo = "https://github.com/nwtime"
-description = "SyncE Project"
+description = "SyncE Projects"
 images = ["/images/featured.webp"]
 
 # Define Content Security Policy
