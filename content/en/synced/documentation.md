@@ -3,7 +3,18 @@ title: "Documentation"
 description: "Documentation for Renesas synced."
 ---
 
-#### Block Diagrams - HARDWARE
+#### Table of Contents
+
+* [Hardware](/synced/documentation/#hardware)
+* [Software](/synced/documentation/#software)
+* [Configuration](/synced/documentation/#configuration)
+* [Management API](/synced/documentation/#management-api)
+* [Event Callback Functions](/synced/documentation/#event-callback-functions)
+* [Acronyms](/synced/documentation/#acronyms)
+
+***
+
+#### Hardware
 
 <figure class="figure">
   <img src="/synced/figure1.jpg" class="figure-img img-fluid">
@@ -32,22 +43,22 @@ Those ports connected to external multiplexers, which are not associated to a cl
 
 ***
 
-#### Block Diagrams - SOFTWARE
+#### Software
 
-SYNCED application runs on CPU, and interacts with the DPLL device as follows:
+`synced` application runs on CPU, and interacts with the DPLL device as follows:
 
-* Read the DPLL status (Locked, Holdover, etc.)
-* Read the selected clock index to determine the current QL
+* Read the DPLL status (Locked, Holdover, etc.).
+* Read the selected clock index to determine the current QL.
 * Read the device reference monitors status to notify the user when the physical clocks qualification fails.
-* Set the selected clock, or write a clock priority table into the DPLL device
+* Set the selected clock, or write a clock priority table into the DPLL device.
 
 _Device APIs_ module implements the hardware abstraction layer.
 
 The architecture is modular, and each software module performs simple tasks:
-* The ESMC stack notifies the Selector when a Sync-E port Quality Level has changed
-* The Selector set the clock priority table into the DPLL device
-* Sync-E DPLL monitor reads the DPLL and clock status and set the current QL into the ESMC stack.
-* PCM interface enables the communication with an external PTP Clock Manager application if needed. The purpose of this interface is to provide the current clock category.
+* The _ESMC stack_ notifies the _Selector_ when a Sync-E port Quality Level has changed.
+* The _Selector_ sets the clock priority table into the DPLL device.
+* Sync-E DPLL monitor reads the DPLL and clock status and sets the current QL into the ESMC stack.
+* _PCM interface_ enables the communication with an external PTP Clock Manager application if needed. The purpose of this interface is to provide the current clock category.
 * The management interface enables the communication with an external CLI client SYNCED_CLI which is included in the open-source code. SYNCED_CLI implements all management APIs.
 
 ***
@@ -83,7 +94,7 @@ The configuration file has two sections:
 * Initial QL
 
 | Port type | [name] | Clock index | Priority | TX enable | RX enable | TX bundle number | Initial QL |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | Active Sync-E clock | m | m | m | opt | 1 | opt | opt/n |
 | External clock | m | m | m | n | n | N | opt/n | 
 | Sync-E monitoring | m | n | m | opt | 1 | opt | opt/n |
@@ -100,15 +111,11 @@ synced provides a set of management APIs to get information and set parameters. 
 The APIs return one of the following response codes:
 
 | Response code | Response | Details |
-| --- | --- | --- |
+| :---: | --- | --- |
 | 0 | Ok | The command finished successfully. |
 | 1 | Invalid | One or more input arguments are invalid. |
 | 2 | Failed | Command failed. Ex: port name cannot be found. |
 | 3 | Not Supported | The command is not supported in current operation mode. |
-
-***
-
-#### Management API
 
 1. Get a list of sync information structures, one for each port:
    * Port name
@@ -116,254 +123,65 @@ The APIs return one of the following response codes:
    * Type-specific information:
 
    | Information | Active Sync-E | External | Monitoring | TX only |
-   | --- | --- | --- | --- | --- |
-   | priority | x | x | x |
+   | --- | :---: | :---: | :---: | :---: |
+   | priority | x | x | x | |
+   | current QL | x | x | x | |
+   | sync state | x | x | x | |
+   | TX bundle number | x | | x | x |
+   | clock index | x | x | | |
+   | hoff/wtr remaining time [ms] | x | | x | |
+   | number of hops | x | | x | |
+   | rank | x | x | x | |
+   | sync clock state | x | x | | |
+   | clock reference monitor status | x | x | | |
+   | RX timeout flag | x | | x | |
+   | port link-down flag | x | | x | x |
+
+2. Get a sync information structure for a specific port. The application provides the information for the specified port name.
+3. Get current status:
+   * Current QL
+   * Selected port name
+   * Selected clock index
+   * Sync-E DPLL state
+   * Holdover remaining time in milliseconds
+4. Set forced QL per port
+5. Clear forced QL per port
+6. Clear holdover timer
+7. Clear Sync-E clock wait-to-restore timer per port
+8. Assign a new Sync-E port to a clock index
+9. Set priority per port
+
+***
+
+#### Event Callback Functions
+
+The purpose of the callback functions is to notify the user when an event occurs. The implementation is on user side; however, `synced` contains template code for each callback and examples on how to control the external multiplexers.
+
+1. Current QL
+2. Sync port current QL
+3. Sync-E DPLL current state (Locked, Holdover, etc)
+4. Sync port current clock state (Qualified, Unqualified)
+5. Sync port current state (Normal, Forced, Wait-to-restore, Hold-off)
+6. Alarms:
+   * Timing loop detected
+   * Invalid QL received at port
+7. PCM interface status
+
+***
+
+#### Acronyms
 	
 
- 
-
-current QL
-	
-
-x
-	
-
-x
-	
-
-x
-	
-
- 
-
-sync state
-	
-
-x
-	
-
-x
-	
-
-x
-	
-
- 
-
-TX bundle number
-	
-
-x
-	
-
- 
-	
-
-x
-	
-
-x
-
-clock index
-	
-
-x
-	
-
-x
-	
-
- 
-	
-
- 
-
-hoff/wtr remaining time [ms]
-	
-
-x
-	
-
- 
-	
-
-x
-	
-
- 
-
-number of hops
-	
-
-x
-	
-
- 
-	
-
-x
-	
-
- 
-
-rank
-	
-
-x
-	
-
-x
-	
-
-x
-	
-
- 
-
-sync clock state
-	
-
-x
-	
-
-x
-	
-
- 
-	
-
- 
-
-clock reference monitor status
-	
-
-x
-	
-
-x
-	
-
- 
-	
-
- 
-
-RX timeout flag
-	
-
-x
-	
-
- 
-	
-
-x
-	
-
- 
-
-port link-down flag
-	
-
-x
-	
-
- 
-	
-
-x
-	
-
-x
-
-Management API
-
-        Get a sync information structure for a specific port. The application provides the information for the specified port name.
-        Get current status:
-                    Current QL
-                    Selected port name
-                    Selected clock index
-                    Sync-E DPLL state
-                    Holdover remaining time in milliseconds
-        Set forced QL per port
-        Clear forced QL per port
-        Clear holdover timer
-        Clear Sync-E clock wait-to-restore timer per port
-        Assign a new Sync-E port to a clock index
-        Set priority per port
-
-Event Callback Functions
-
-The purpose of the callback functions is to notify the user when an event occurs. The implementation is on user side; however, SYNCED contains template code for each callback and examples on how to control the external multiplexers.
-
-        Current QL
-        Sync port current QL
-        Sync-E DPLL current state (Locked, Holdover, etc)
-        Sync port current clock state (Qualified, Unqualified)
-        Sync port current state (Normal, Forced, Wait-to-restore, Hold-off)
-        Alarms:
-                Timing loop detected
-                Invalid QL received at port
-        PCM interface status
-
-Acronyms
-
-Acronym
-	
-
-Definition
-
-DPLL
-	
-
-Digital Phase Lock Loop
-
-DNU
-	
-
-Do-not-use
-
-ESMC
-	
-
-Ethernet Synchronization Messaging Channel
-
-ITU-T
-	
-
-International Telecommunication Union – Telecommunication Standardization Sector
-
-LO
-	
-
-Local Oscillator
-
-MUX
-	
-
-Multiplexer
-
-PCM
-	
-
-PTP Clock Manager
-
-PTP
-	
-
-Precision Time Protocol
-
-PTP4L
-	
-
-Precision Time Protocol for Linux
-
-QL
-	
-
-Quality Level
-
-TLV
-	
-
-Type-Length-Value
+| Acronym | Definition |
+| --- | --- |
+|DPLL | Digital Phase Lock Loop |
+| DNU | Do-not-use |
+| ESMC | Ethernet Synchronization Messaging Channel |
+| ITU-T | International Telecommunication Union – Telecommunication Standardization Sector |
+| LO | Local Oscillator |
+| MUX | Multiplexer |
+| PCM | PTP Clock Manager |
+| PTP | Precision Time Protocol |
+| PTP4L | Precision Time Protocol for Linux |
+| QL | Quality Level |
+| TLV | Type-Length-Value |
